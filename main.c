@@ -18,9 +18,13 @@
 #define sbi(reg, bit) reg |= (_BV(bit))
 #endif
 
-int low = 1023 * 0.05, high = 1023 * 0.12; // low -51 high -123
+int low = 1023 * 0.061, high = 1023 * 0.125, middle= 65; // low -51 high -123
 
-
+void init_PWM()
+	{
+		TCCR1A |= (1 << WGM10) | (1 << WGM11) | (1 << COM1A1); // TOP -1023
+		TCCR1B |= (1 << WGM12) | (1 << CS12);				   // ustawienie prescalera na 256 bitow
+	}
 
 int getKey()
 	{
@@ -32,6 +36,7 @@ int getKey()
 			{
 				cbi(PORTD, i);
 				return  i + 1;
+			}
 			else if (bit_is_set(PIND, 5))
 			{
 				cbi(PORTD, i);
@@ -68,6 +73,12 @@ void ServoControl(int option)
 			int key = getKey();
 			if(key!=0)
 			{
+				if(key==16)
+				{
+					float tmp1 = 1023.0*0.06 + atof(buf)/180.0*65;
+					int tmp2= tmp1;
+					OCR1A = tmp2;
+				}
 				lcd_gotoxy(0, 4);
 				char c = key + '0';
 				strncat(buf, &c,1);
@@ -116,11 +127,7 @@ void ServoControl(int option)
 
 	}
 
-	void init_PWM()
-	{
-		TCCR1A |= (1 << WGM10) | (1 << WGM11) | (1 << COM1A1); // TOP -1023
-		TCCR1B |= (1 << WGM12) | (1 << CS12);				   // ustawienie prescalera na 256 bitow
-	}
+
 
 
 	void MenuControl(int option)
@@ -131,7 +138,7 @@ void ServoControl(int option)
 		{
 			init_PWM();
 
-			OCR1A = (low + high) / 2;
+			OCR1A = (low+high)/2;
 			lcd_clear_buffer();
 			lcd_gotoxy(0, 0);
 			lcd_puts_p(PSTR("Obsluga serwa:"));
