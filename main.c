@@ -1,6 +1,8 @@
 //****main.c****//
 #include <avr/io.h>
 #include <util/delay.h>
+#include <stdlib.h>
+#include <string.h>
 
 #include "lcd.h"
 #include "bitmaps.h"
@@ -18,6 +20,38 @@
 
 int low = 1023 * 0.05, high = 1023 * 0.12; // low -51 high -123
 
+
+
+int getKey()
+	{
+		_delay_ms(2000);
+		for (int i = 0; i < 4; i++)
+		{
+			sbi(PORTD, i);
+			if (bit_is_set(PIND, 4))
+			{
+				cbi(PORTD, i);
+				return  i + 1;
+			else if (bit_is_set(PIND, 5))
+			{
+				cbi(PORTD, i);
+				return i + 5;
+			}
+			else if (bit_is_set(PIND, 6))
+			{
+				cbi(PORTD, i);
+				return i + 9;
+			}
+			else if (bit_is_set(PIND, 7))
+			{
+				cbi(PORTD, i);
+				return i + 13;
+			}
+			cbi(PORTD, i);
+		}
+		return 0;
+	}
+
 void ServoControl(int option)
 {
 	switch (option)
@@ -28,6 +62,19 @@ void ServoControl(int option)
 		lcd_gotoxy(0, 0);
 		lcd_puts_p(PSTR("Podaj wartosc kata:"));
 		lcd_display();
+		static char* buf="";
+		while(1)
+		{
+			int key = getKey();
+			if(key!=0)
+			{
+				lcd_gotoxy(0, 4);
+				char c = key + '0';
+				strncat(buf, &c,1);
+				lcd_puts(buf);
+				lcd_display();
+			}
+		}
 	}
 	break;
 
@@ -75,35 +122,7 @@ void ServoControl(int option)
 		TCCR1B |= (1 << WGM12) | (1 << CS12);				   // ustawienie prescalera na 256 bitow
 	}
 
-	int getKey()
-	{
-		for (int i = 0; i < 4; i++)
-		{
-			sbi(PORTD, i);
-			if (bit_is_set(PIND, 4))
-			{
-				cbi(PORTD, i);
-				return  i + 1;
-			}
-			else if (bit_is_set(PIND, 5))
-			{
-				cbi(PORTD, i);
-				return i + 5;
-			}
-			else if (bit_is_set(PIND, 6))
-			{
-				cbi(PORTD, i);
-				return i + 9;
-			}
-			else if (bit_is_set(PIND, 7))
-			{
-				cbi(PORTD, i);
-				return i + 13;
-			}
-			cbi(PORTD, i);
-		}
-		return 0;
-	}
+
 	void MenuControl(int option)
 	{
 		switch (option)
@@ -146,6 +165,7 @@ void ServoControl(int option)
 				lcd_clear_buffer();
 				lcd_drawBitmap(0, 0, bitmap2, 128, 64, WHITE);
 				lcd_display();
+				if(getKey()==4) break;
 			}
 		}
 		break;
@@ -158,6 +178,11 @@ void ServoControl(int option)
 			lcd_display();
 		}
 		break;
+		case 4:
+				{
+					//MainMenu();
+				}
+				break;
 		case 16:
 		{
 			lcd_clear_buffer();
@@ -171,6 +196,7 @@ void ServoControl(int option)
 
 	void MainMenu()
 	{
+		lcd_clear_buffer();
 		lcd_gotoxy(0, 0);
 		lcd_puts("Menu:");
 		lcd_gotoxy(0, 2);
@@ -179,6 +205,7 @@ void ServoControl(int option)
 		lcd_puts_p(PSTR("2. Animacja"));
 		lcd_gotoxy(0, 6);
 		lcd_puts_p(PSTR("3. Zakoncz program"));
+		//lcd_drawRect(1,1,128,64,WHITE);
 		lcd_display();
 
 		for (;;)
@@ -190,8 +217,8 @@ void ServoControl(int option)
 
 	int main()
 	{
-		DDRD = 0b00001111;
-		DDRB |= (1 << DDB1) | (1 << DDB2);
+		DDRD = 0b00001111; // keyboard
+		DDRB |= (1 << DDB1) | (1 << DDB2); // OCR registers
 		PORTD = 0xff;
 
 		lcd_init(LCD_DISP_ON); // init lcd and turn on
