@@ -16,9 +16,70 @@
 #define sbi(reg, bit) reg |= (_BV(bit))
 #endif
 
-void init_PWM() // zadanie 1
+int low = 1023 * 0.05, high = 1023 * 0.12; //low -51 high -123
+
+void getKeyServo()
 {
-	TCCR1A |= (1 << WGM10) | (1 << WGM11) | (1 << COM1A1);
+    for (int i = 0; i < 4; i++)
+    {
+        sbi(PORTD, i);
+        if (bit_is_set(PIND, 4))
+        {
+            cbi(PORTD, i);
+            if (i == 0)
+            {
+            				lcd_clear_buffer();
+            			   lcd_gotoxy(0,0);
+            			   lcd_puts_p(PSTR("1"));
+            			   lcd_display();
+            }
+            if (i == 1)
+            {
+            				lcd_clear_buffer();
+            			   lcd_gotoxy(0,0);
+            			   lcd_puts_p(PSTR("2"));
+            			   lcd_display();
+            }
+            if (i == 2)
+            {
+                {
+                					lcd_clear_buffer();
+                					lcd_gotoxy(0, 0);
+                					lcd_puts_p(PSTR("wykonuje automat"));
+                					lcd_display();
+                	while(1){
+                				int i = 50;
+                				while (i != high)
+                				{
+                					OCR1A = i;
+                					_delay_ms(200);
+                					i++;
+                				}
+                				while (i != low)
+                				{
+                					OCR1A = i;
+                					_delay_ms(200);
+                					i--;
+                				}
+                }}
+            }
+            if (i == 3)
+            {
+                {
+                	lcd_clear_buffer();
+                			   lcd_gotoxy(0,0);
+                			   lcd_puts_p(PSTR("4"));
+                			   lcd_display();
+                }
+            }
+        }
+        cbi(PORTD, i);
+    }
+}
+
+void init_PWM()
+{
+	TCCR1A |= (1 << WGM10) | (1 << WGM11) | (1 << COM1A1); // TOP -1023
 	TCCR1B |= (1 << WGM12) | (1 << CS12); // ustawienie prescalera na 256 bitow
 }
 
@@ -26,76 +87,30 @@ void getKey()
 {
 	for (int i = 0; i < 4; i++)
 	{
-		sbi(PORTB, i);
-		if (bit_is_set(PINB, 4))
+		sbi(PORTD, i);
+		if (bit_is_set(PIND, 4))
 		{
-			cbi(PORTB, i);
+			cbi(PORTD, i);
 			if (i == 0)
 			{
-				//init_PWM();
-				int low = 1023 * 0.05, high = 1023 * 0.12;
+				init_PWM();
+
 				OCR1A = (low + high) / 2;
 				lcd_clear_buffer();
 				lcd_gotoxy(0, 0);
-				lcd_puts("Obsluga serwa:"); // put string from RAM to display (TEXTMODE) or buffer (GRAPHICMODE)
-				lcd_gotoxy(0, 2);			// set cursor to first column at line 3
+				lcd_puts_p(PSTR("Obsluga serwa:"));
+				lcd_gotoxy(0, 2);
 				lcd_puts_p(PSTR("1. Bezwgledny kat"));
 				lcd_gotoxy(0, 4);
 				lcd_puts_p(PSTR("2. Wzgledny kat"));
 				lcd_gotoxy(0, 6);
 				lcd_puts_p(PSTR("3. Automatyczny tryb"));
 				lcd_display();
+				_delay_ms(2000);
 
 				while (1)
 				{
-
-//					if (bit_is_set(PINB, 4))
-//					{
-//						switch (i)
-//						{
-//						case 0:
-//						{
-//						}
-//						break;
-//						}
-//					}
-
-					//            			if (bit_is_clear(PIND, 1))
-					//            			{
-					//            				if (bit_is_clear(PIND, 2) && OCR1A < high)  //zadanie 4
-					//            				{
-					//            					cbi(PORTD, PD5);
-					//            					OCR1A = OCR1A + 1;
-					//            					_delay_ms(200);
-					//            				}
-					//            				if (bit_is_clear(PINB, 1) && OCR1A > low)
-					//            				{
-					//            					cbi(PORTD, PD5);
-					//            					OCR1A = OCR1A - 1;
-					//            					_delay_ms(200);
-					//            				}
-					//            				else
-					//            				{
-					//            					sbi(PORTD, PD5);
-					//            					_delay_ms(200);
-					//            				}
-					//            			}
-					//            			else
-					//            			{
-					//            				int i = 50;
-					//            				while (i != high) //zadanie 3
-					//            				{
-					//            					OCR1A = i;
-					//            					_delay_ms(200);
-					//            					i++;
-					//            				}
-					//            				while (i != low)
-					//            				{
-					//            					OCR1A = i;
-					//            					_delay_ms(200);
-					//            					i--;
-					//            				}
-					//            			}
+					getKeyServo();
 				}
 			}
 			if (i == 1)
@@ -133,9 +148,9 @@ void getKey()
 				}
 			}
 		}
-		else if (bit_is_set(PINB, 5))
+		else if (bit_is_set(PIND, 5))
 		{
-			cbi(PORTB, i);
+			cbi(PORTD, i);
 			if (i == 0)
 			{
 				lcd_clear_buffer();
@@ -165,9 +180,9 @@ void getKey()
 				lcd_display();
 			}
 		}
-		else if (bit_is_set(PINB, 6))
+		else if (bit_is_set(PIND, 6))
 		{
-			cbi(PORTB, i);
+			cbi(PORTD, i);
 			if (i == 0)
 			{
 				lcd_clear_buffer();
@@ -197,7 +212,7 @@ void getKey()
 				lcd_display();
 			}
 		}
-		else if (bit_is_set(PINB, 7))
+		else if (bit_is_set(PIND, 7))
 		{
 			if (i == 0)
 			{
@@ -229,27 +244,28 @@ void getKey()
 				lcd_display();
 			}
 		}
-		cbi(PORTB, i);
+		cbi(PORTD, i);
 	}
 }
 
+
+
 int main(void)
 {
-	DDRB = 0b00001111;
-	PORTB = 0xff;
-	//DDRD = 0x00;
+	DDRD = 0b00001111;
+	//PORTB = 0xff;
+	DDRB |= (1 << DDB1) | (1 << DDB2);
+	PORTD = 0xff;
 
 	lcd_init(LCD_DISP_ON); // init lcd and turn on
-
-	lcd_puts("( ͡°.°) Menu:"); // put string from RAM to display (TEXTMODE) or buffer (GRAPHICMODE)
-	lcd_gotoxy(0, 2);		  // set cursor to first column at line 3
+	lcd_gotoxy(0,0);
+	lcd_puts("Menu:");
+	lcd_gotoxy(0, 2);
 	lcd_puts_p(PSTR("1. Obsluga serwa"));
 	lcd_gotoxy(0, 4);
 	lcd_puts_p(PSTR("2. Animacja"));
 	lcd_gotoxy(0, 6);
-	lcd_puts_p(PSTR("3. Nie klikaj"));
-	lcd_gotoxy(0, 8);
-	lcd_puts_p(PSTR("4.Zakończ program"));
+	lcd_puts_p(PSTR("3. Zakoncz program"));
 
 	lcd_display();
 
