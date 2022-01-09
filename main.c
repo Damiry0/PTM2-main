@@ -44,8 +44,8 @@ int main()
 
 void init_PWM()
 {
-	TCCR1A |= (1 << WGM10) | (1 << WGM11) | (1 << COM1A1); // TOP -1023
-	TCCR1B |= (1 << WGM12) | (1 << CS12);				   // ustawienie prescalera na 256 bitow
+	TCCR1A |= (1 << WGM10) | (1 << WGM11) | (1 << COM1A1); // TOP - 1023
+	TCCR1B |= (1 << WGM12) | (1 << CS12);				   // prescaler 256 bits
 }
 
 int getKey()
@@ -100,7 +100,9 @@ void ServoControl(int option)
 					float tmp1 = 1023.0 * 0.06 + atof(buf) / 180.0 * 65;
 					int tmp2 = tmp1;
 					OCR1A = tmp2;
-					return;
+					memset(buf, 0, sizeof buf);
+					buf = "";
+					break;
 				}
 				lcd_gotoxy(0, 4);
 				char c = key + '0';
@@ -109,7 +111,8 @@ void ServoControl(int option)
 				lcd_display();
 			}
 		}
-		MenuControl(getKey());
+		_delay_ms(2000);
+		MainMenu();
 	}
 	break;
 
@@ -141,6 +144,7 @@ void ServoControl(int option)
 				lcd_display();
 			}
 		}
+		MainMenu();
 	}
 	break;
 
@@ -148,8 +152,10 @@ void ServoControl(int option)
 	{
 		lcd_clear_buffer();
 		lcd_gotoxy(0, 0);
-		lcd_puts_p(PSTR("wykonuje automat"));
+		lcd_puts_p(PSTR("Wykonuje automat"));
 		lcd_display();
+		lcd_gotoxy(0, 2);
+		lcd_puts_p("Nacisnij X aby zakonczyc");
 		while (1)
 		{
 			int i = 50;
@@ -226,7 +232,7 @@ void MenuControl(int option)
 	break;
 	case 4:
 	{
-		// MainMenu();
+		//MainMenu(); bez sensu
 	}
 	break;
 	case 16:
@@ -243,8 +249,9 @@ void MenuControl(int option)
 void MainMenu()
 {
 	lcd_clear_buffer();
-	lcd_gotoxy(0, 0);
-	lcd_puts("Menu:");
+	lcd_display();
+//	lcd_gotoxy(0, 0);
+//	lcd_puts("Menu:");
 	lcd_gotoxy(0, 2);
 	lcd_puts_p(PSTR("1. Obsluga serwa"));
 	lcd_gotoxy(0, 4);
