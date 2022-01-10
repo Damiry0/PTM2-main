@@ -57,26 +57,35 @@ int getKey()
 		if (bit_is_set(PIND, 4))
 		{
 			cbi(PORTD, i);
-			return i + 1;
+			if(i==0)return 7;
+			if(i==1)return 8;
+			if(i==2)return 9;
+
 		}
 		else if (bit_is_set(PIND, 5))
 		{
 			cbi(PORTD, i);
-			return i + 5;
+			if(i==0)return 4;
+			if(i==1)return 5;
+			if(i==2)return 6;
 		}
 		else if (bit_is_set(PIND, 6))
 		{
 			cbi(PORTD, i);
-			return i + 9;
+			if(i==0)return 1;
+			if(i==1)return 2;
+			if(i==2)return 3;
 		}
 		else if (bit_is_set(PIND, 7))
 		{
 			cbi(PORTD, i);
-			return i + 13;
+			if(i==0)return 0;
+			if(i==1)return 15;
+			if(i==2)return 16;
 		}
 		cbi(PORTD, i);
 	}
-	return 0;
+	return -1;
 }
 
 void ServoControl(int option)
@@ -93,7 +102,7 @@ void ServoControl(int option)
 		while (1)
 		{
 			int key = getKey();
-			if (key != 0)
+			if (key != -1)
 			{
 				if (key == 16)
 				{
@@ -126,7 +135,7 @@ void ServoControl(int option)
 		while (1)
 		{
 			int key = getKey();
-			if (key != 0)
+			if (key != -1)
 			{
 				if (key == 16)
 				{
@@ -153,10 +162,12 @@ void ServoControl(int option)
 		lcd_clear_buffer();
 		lcd_gotoxy(0, 0);
 		lcd_puts_p(PSTR("Wykonuje automat"));
-		lcd_display();
 		lcd_gotoxy(0, 2);
-		lcd_puts_p("Nacisnij X aby zakonczyc");
-		while (1)
+		lcd_puts_p(PSTR("Przytrzymaj X aby"));
+		lcd_gotoxy(0, 4);
+		lcd_puts_p(PSTR("zakonczyc."));
+		lcd_display();
+		while (getKey()!=15)
 		{
 			int i = 50;
 			while (i != high)
@@ -172,6 +183,7 @@ void ServoControl(int option)
 				i--;
 			}
 		}
+		MainMenu();
 	}
 	break;
 	}
@@ -203,7 +215,7 @@ void MenuControl(int option)
 	break;
 	case 2:
 	{
-		while (1)
+		while (getKey() != 15)
 		{
 			lcd_clear_buffer();
 			lcd_drawBitmap(0, 0, bitmap, 128, 64, WHITE);
@@ -216,9 +228,8 @@ void MenuControl(int option)
 			lcd_clear_buffer();
 			lcd_drawBitmap(0, 0, bitmap2, 128, 64, WHITE);
 			lcd_display();
-			if (getKey() == 4)
-				break;
 		}
+		MainMenu();
 	}
 	break;
 	case 3:
@@ -226,21 +237,17 @@ void MenuControl(int option)
 
 		lcd_clear_buffer();
 		lcd_gotoxy(0, 0);
-		lcd_puts_p(PSTR("3"));
+		lcd_puts_p(PSTR("‏‏‎⠀")); // U+2800
 		lcd_display();
 	}
 	break;
-	case 4:
+
+	case 17:
 	{
-		//MainMenu(); bez sensu
-	}
-	break;
-	case 16:
-	{
-		lcd_clear_buffer();
-		lcd_gotoxy(0, 0);
-		lcd_puts_p(PSTR("16"));
-		lcd_display();
+		//lcd_clear_buffer();
+		lcd_gotoxy(10, 10);
+		lcd_puts_p(PSTR("16")); // dont touch
+		//lcd_display();
 	}
 	break;
 	}
