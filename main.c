@@ -107,7 +107,7 @@ void ServoControl(int option)
 				if (key == 16)
 				{
 					float tmp1 = 1023.0 * 0.06 + atof(buf) / 180.0 * 65;
-					int tmp2 = tmp1;
+					int tmp2 = tmp1+1; // adding lost data during convertion
 					OCR1A = tmp2;
 					memset(buf, 0, sizeof buf);
 					buf = "";
@@ -140,7 +140,7 @@ void ServoControl(int option)
 				if (key == 16)
 				{
 					float tmp1 = atof(buf) / 180.0 * 65;
-					int tmp2 = tmp1;
+					int tmp2 = tmp1+1; // adding lost data during convertion
 					OCR1A += tmp2;
 					memset(buf, 0, sizeof buf);
 					buf = "";
