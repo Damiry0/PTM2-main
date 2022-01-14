@@ -13,7 +13,7 @@
 </p>  
 
 # Project
-W repozytorium znajduje się program do obsługi serwa w trzech trybach oraz moduł do animacji bitmap. Całość wyświetlana jest na wyświetlaczu SSD1306 obsługiwanego przez [podaną](https://github.com/Sylaina/oled-display) biblioteke. Bitmapy najłatwiej można utworzyć przy pomocy [tego](https://github.com/tibounise/Esther) prostego skryptu.
+W repozytorium znajduje się program do obsługi serwa w trzech trybach oraz moduł do animacji bitmap. Całość wyświetlana jest na wyświetlaczu SSD1306 obsługiwanego przez [podaną](https://github.com/Sylaina/oled-display) biblioteke. Obsługa serwa jest intuicyjna, natomiast dodatkowe bitmapy należy umieścić w pliku [bitmaps.h](bitmaps.h). Bitmapy najłatwiej można utworzyć przy pomocy [tego](https://github.com/tibounise/Esther) prostego skryptu.
 ## Przykładowa bitmapa
 ![Alt Text](https://i.imgur.com/VTLlJDl.gif)
 
