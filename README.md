@@ -1,6 +1,6 @@
 <br />
 <p align="center">
-  <h3 align="center">PTM</h3>
+  <h3 align="center">PTM 2</h3>
 
   <p align="center">
     Podstawy Techniki Mikroprocesorowej 2
