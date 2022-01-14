@@ -24,7 +24,7 @@ W repozytorium znajduje się program do obsługi serwa w trzech trybach oraz mod
 # Wymagania
 Aby uruchomić projekt w środowisku symulacyjnym należy użyć symulatora Simulide w wersji conajmiej 1.0.0-RC1. Poprzednie wersje nie wspierają interfejsu I2C dla wyświetlacza SSD1306 co uniemożliwia prezentacje menu.
 
-Symulator można pobrać go tutaj:
+Symulator można pobrać tutaj:
 * [Windows](https://launchpad.net/simulide/1.0.0/1.0.0-rc1/+download/SimulIDE_1.0.0-RC1_Win64.zip)
 * [Linux](https://launchpad.net/simulide/1.0.0/1.0.0-rc1/+download/simulide_1.0.0-RC1.AppImage)
 
